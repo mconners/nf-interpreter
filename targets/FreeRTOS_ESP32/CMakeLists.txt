@@ -8,11 +8,11 @@ include(toolchain.xtensa-esp32-elf)
 include(binutils.ESP32)
 include(NF_Utils)
 
+# Set target series in lower case
+nf_set_esp32_target_series()
+
 # Define PLATFORM base path
 set(BASE_PATH_FOR_PLATFORM ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
-
-# Set target series in lower case
-NF_SET_ESP32_TARGET_SERIES()
 
 # ESP32 targets use Espressif IDF and ESP32 FreeRTOS
 
