@@ -29,8 +29,8 @@
  * Author: Simon Goldschmidt
  *
  */
-#ifndef __LWIPOPTS_H__
-#define __LWIPOPTS_H__
+#ifndef LWIPOPTS_H
+#define LWIPOPTS_H
 
 #include <stdlib.h>
 #include <time.h>
@@ -875,4 +875,4 @@ enum
 
 #define SOC_SEND_LOG // printf
 
-#endif /* __LWIPOPTS_H__ */
+#endif // _LWIPOPTS_H */

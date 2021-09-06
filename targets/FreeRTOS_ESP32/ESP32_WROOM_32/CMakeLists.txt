@@ -7,8 +7,8 @@ include(binutils.common)
 include(binutils.ESP32)
 
 # add packages
-NF_ADD_COMMON_PACKAGES()
-NF_ADD_PLATFORM_PACKAGES()
+nf_add_common_packages()
+nf_add_platform_packages()
 
 #######################################
 

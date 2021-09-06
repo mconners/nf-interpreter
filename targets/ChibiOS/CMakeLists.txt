@@ -4,13 +4,13 @@
 #
 
 include(FetchContent)
+include(binutils.common)
 include(binutils.arm-none-eabi)
 include(binutils.ChibiOS)
 include(STM32_CubePackage)
-include(NF_Utils)
 
 # Set target series
-NF_SET_STM32_TARGET_SERIES()
+nf_set_stm32_target_series()
 
 # Define PLATFORM base path
 set(BASE_PATH_FOR_PLATFORM ${CMAKE_CURRENT_SOURCE_DIR} PARENT_SCOPE)
@@ -305,9 +305,6 @@ include_directories( ${CMSIS_RTOS_INCLUDE_DIR})
 
 # need to find board definition files (board.c and board.h)
 
-# assume no community board... until proven otherwise
-set(CHIBIOS_COMMUNITY_TARGET FALSE CACHE INTERNAL "Community target flag")
-
 # start search in nanoFramework ChibiOS 'overlay' folder
 if(EXISTS ${CMAKE_SOURCE_DIR}/targets/ChibiOS/_nf-overlay/os/hal/boards/${TARGET_BOARD})
     # board found
@@ -349,7 +346,7 @@ else()
         # try to find board in the Community targets folder
         if(EXISTS ${CMAKE_SOURCE_DIR}/targets-community/ChibiOS/${TARGET_BOARD})
             # set flag for this being a community board
-            set(CHIBIOS_COMMUNITY_TARGET TRUE CACHE INTERNAL "Community target flag")
+            set(IS_COMMUNITY_TARGET TRUE CACHE INTERNAL "Community target flag")
 
 
             # check if the board definition files are available at the target folder
@@ -443,7 +440,7 @@ if(NF_FEATURE_USE_SPIFFS)
 endif()
 
 # add target ChibiOS dirs
-add_subdirectory(_Include)
+add_subdirectory(_include)
 add_subdirectory(_common)
 add_subdirectory(_nanoBooter)
 add_subdirectory(_nanoCLR)

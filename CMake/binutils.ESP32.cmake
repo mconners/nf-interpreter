@@ -120,7 +120,44 @@ endfunction()
 
 # Add packages that are common to ESP32 platform builds
 # To be called from target CMakeList.txt
-macro(NF_ADD_PLATFORM_PACKAGES)
+# optional TARGET argument with target name
+macro(nf_add_platform_packages)
+
+    # parse arguments
+    cmake_parse_arguments(NFAPP "" "TARGET" "" ${ARGN})
+
+    # packages specific for nanoCRL
+    if("${NFAPP_TARGET}" STREQUAL "${NANOCLR_PROJECT_NAME}")
+
+        if(USE_NETWORKING_OPTION)
+
+            find_package(NF_Network REQUIRED QUIET)
+
+            # security provider is mbedTLS
+            if(USE_SECURITY_MBEDTLS_OPTION)
+                find_package(mbedTLS REQUIRED QUIET)
+            endif()
+
+        endif()
+
+    endif()
+    
+endmacro()
+
+# Add ESP32  platform dependencies to a specific CMake target
+# To be called from target CMakeList.txt
+macro(nf_add_platform_dependencies target)
+
+    nf_add_common_dependencies(${target})
+
+    nf_add_lib_coreclr(
+        EXTRA_INCLUDES
+            ${CMAKE_CURRENT_SOURCE_DIR}
+            ${CMAKE_CURRENT_BINARY_DIR}/${target}
+            ${CMAKE_CURRENT_SOURCE_DIR}/${target}
+            ${CMAKE_CURRENT_SOURCE_DIR}/Include
+            ${CMAKE_CURRENT_SOURCE_DIR}/Network
+            ${TARGET_ESP32_IDF_INCLUDES})
 
     find_package(ESP32_IDF REQUIRED)
 
@@ -148,7 +185,7 @@ endmacro()
 
 # Add ESP32 platform include directories to a specific CMake target
 # To be called from target CMakeList.txt
-macro(NF_ADD_PLATFORM_INCLUDE_DIRECTORIES TARGET)
+macro(nf_add_platform_include_directories target)
 
     target_include_directories(${TARGET}.elf PUBLIC
 
@@ -171,7 +208,7 @@ endmacro()
 
 # Add ESP32 platform target sources to a specific CMake target
 # To be called from target CMakeList.txt
-macro(NF_ADD_PLATFORM_SOURCES TARGET)
+macro(nf_add_platform_sources target)
 
     # add header files with common OS definitions and board definitions
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/target_common.h.in
