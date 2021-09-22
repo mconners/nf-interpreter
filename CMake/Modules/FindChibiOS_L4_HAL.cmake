@@ -157,7 +157,6 @@ set(CHIBIOS_HAL_SRCS
     hal_trng_lld.c
     hal_rtc_lld.c
     hal_sdc_lld.c
-
     hal_i2s_lld.c
     hal_spi_lld.c
 
@@ -170,7 +169,6 @@ set(CHIBIOS_HAL_SRCS
     hal_uart_lld.c
 
     hal_wdg_lld.c
-
 
     # OSAL 
     osal.c

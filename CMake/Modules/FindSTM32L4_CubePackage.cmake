@@ -9,14 +9,41 @@ FetchContent_GetProperties(stm32l4_cubepackage)
 # set include directories
 list(APPEND STM32L4_CubePackage_INCLUDE_DIRS ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32L4xx/Include)
 list(APPEND STM32L4_CubePackage_INCLUDE_DIRS ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/STM32L4xx_HAL_Driver/Inc)
+list(APPEND STM32L4_CubePackage_INCLUDE_DIRS ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/CMSIS/Include)
 
-# source files
+# HAL source files
 set(STM32L4_CubePackage_SRCS
 
     # add HAL files here as required
-    
-    # SPIFFS
+    stm32l4xx_hal_cortex.c
+    stm32l4xx_hal_crc_ex.c
+    stm32l4xx_hal_crc.c
+    stm32l4xx_hal_dma_ex.c
+    stm32l4xx_hal_dma.c
+    stm32l4xx_hal_i2c_ex.c
+    stm32l4xx_hal_i2c.c
+    stm32l4xx_hal_flash_ex.c
+    stm32l4xx_hal_flash.c
+    stm32l4xx_hal_gpio.c
+    stm32l4xx_hal_pwr_ex.c
+    stm32l4xx_hal_pwr.c
     stm32l4xx_hal_qspi.c
+    stm32l4xx_hal_rcc_ex.c
+    stm32l4xx_hal_rcc.c
+    stm32l4xx_hal_rtc_ex.c
+    stm32l4xx_hal_rtc.c
+    stm32l4xx_hal_qspi.c
+    stm32l4xx_hal_uart_ex.c
+    stm32l4xx_hal_uart.c
+    stm32l4xx_hal.c
+
+    stm32l4xx_ll_dma.c
+    stm32l4xx_ll_dma2d.c
+    stm32l4xx_ll_pwr.c
+    stm32l4xx_ll_rcc.c
+    stm32l4xx_ll_rtc.c
+    stm32l4xx_ll_usart.c
+    stm32l4xx_ll_utils.c
 )
 
 foreach(SRC_FILE ${STM32L4_CubePackage_SRCS})
@@ -38,6 +65,64 @@ foreach(SRC_FILE ${STM32L4_CubePackage_SRCS})
     list(APPEND STM32L4_CubePackage_SOURCES ${STM32L4_CubePackage_SRC_FILE})
     
 endforeach()
+
+# BSP
+if(${TARGET_BOARD} STREQUAL "ST_B_L475E_IOT01A")
+
+    # ST_B_L475E_IOT01A
+    list(APPEND STM32L4_CubePackage_INCLUDE_DIRS ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/B-L475E-IOT01)
+    list(APPEND STM32L4_CubePackage_INCLUDE_DIRS ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/Components/hts221)
+
+    set(BSP_CubePackage_SRCS
+
+        # BSP
+        stm32l475e_iot01_accelero.c
+        stm32l475e_iot01_gyro.c
+        stm32l475e_iot01_hsensor.c
+        stm32l475e_iot01_magneto.c
+        stm32l475e_iot01_psensor.c
+        stm32l475e_iot01_qspi.c
+        stm32l475e_iot01_tsensor.c
+        stm32l475e_iot01.c
+
+        # Sensors
+        hts221.c
+        lis3mdl.c
+        lsm6dsl.c
+        lps22hb.c
+    )
+
+    foreach(SRC_FILE ${BSP_CubePackage_SRCS})
+        set(BSP_CubePackage_SRC_FILE SRC_FILE-NOTFOUND)
+        find_file(BSP_CubePackage_SRC_FILE ${SRC_FILE}
+            PATHS 
+
+            # BSP
+            ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/B-L475E-IOT01
+
+            # Sensors
+            ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/Components/hts221
+            ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/Components/lis3mdl
+            ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/Components/lsm6dsl
+            ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/Components/lps22hb
+
+            CMAKE_FIND_ROOT_PATH_BOTH
+        )
+        
+        if (BUILD_VERBOSE)
+            message("${SRC_FILE} >> ${BSP_CubePackage_SRC_FILE}")
+        endif()
+
+        list(APPEND STM32L4_CubePackage_SOURCES ${BSP_CubePackage_SRC_FILE})
+    endforeach()
+
+    # unset these warnings as errors because these come from a 3rd party library 
+    SET_SOURCE_FILES_PROPERTIES( ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/B-L475E-IOT01/stm32l475e_iot01.c PROPERTIES COMPILE_FLAGS -Wno-unused-parameter)
+    SET_SOURCE_FILES_PROPERTIES( ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/B-L475E-IOT01/stm32l475e_iot01_qspi.c PROPERTIES COMPILE_FLAGS -Wno-unused-parameter)
+    SET_SOURCE_FILES_PROPERTIES( ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/Components/hts221/hts221.c PROPERTIES COMPILE_FLAGS -Wno-unused-parameter)
+    SET_SOURCE_FILES_PROPERTIES( ${stm32l4_cubepackage_SOURCE_DIR}/Drivers/BSP/Components/lps22hb/lps22hb.c PROPERTIES COMPILE_FLAGS -Wno-unused-parameter)
+ 
+endif()
 
 include(FindPackageHandleStandardArgs)
 
