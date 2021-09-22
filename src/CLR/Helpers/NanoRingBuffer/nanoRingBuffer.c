@@ -221,7 +221,7 @@ size_t NanoRingBuffer_PopN(NanoRingBuffer *object, uint8_t *data, size_t length)
         memcpy(data, source, chunk1Size);
 
         data += chunk1Size;
-        
+
         size_t chunk2Size = lengthToRead - chunk1Size;
         memcpy(data, object->_buffer, chunk2Size);
 
